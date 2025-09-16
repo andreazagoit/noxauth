@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NoxAuth - OAuth Provider
 
-## Getting Started
+A minimal OAuth authentication provider built with Next.js, JWT, Neon, and Drizzle ORM.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- 🔐 JWT-based authentication with access and refresh tokens
+- 🌐 OAuth support for Google and GitHub
+- 🗄️ PostgreSQL database with Neon
+- 🔧 Type-safe database queries with Drizzle ORM
+- 🍪 Secure HTTP-only cookies
+- 📱 Responsive UI with Tailwind CSS
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Install dependencies:**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+   ```bash
+   npm install
+   ```
 
-## Learn More
+2. **Environment variables:**
+   Create a `.env` file with the following variables:
 
-To learn more about Next.js, take a look at the following resources:
+   ```env
+   # Database
+   DATABASE_URL="postgresql://username:password@host:5432/database"
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   # JWT Secrets (generate random strings)
+   JWT_SECRET="your-super-secret-jwt-key"
+   JWT_REFRESH_SECRET="your-super-secret-refresh-key"
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   # App URL
+   NEXTAUTH_URL="http://localhost:3000"
 
-## Deploy on Vercel
+   # Google OAuth
+   GOOGLE_CLIENT_ID="your-google-client-id"
+   GOOGLE_CLIENT_SECRET="your-google-client-secret"
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   # GitHub OAuth
+   GITHUB_CLIENT_ID="your-github-client-id"
+   GITHUB_CLIENT_SECRET="your-github-client-secret"
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. **Database setup:**
+
+   ```bash
+   npm run db:push
+   ```
+
+4. **Run the development server:**
+   ```bash
+   npm run dev
+   ```
+
+## OAuth Provider Setup
+
+### Google OAuth
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select existing
+3. Enable Google+ API
+4. Create OAuth 2.0 credentials
+5. Add `http://localhost:3000/api/auth/callback/google` as redirect URI
+
+### GitHub OAuth
+
+1. Go to GitHub Settings > Developer settings > OAuth Apps
+2. Create a new OAuth App
+3. Set Authorization callback URL to `http://localhost:3000/api/auth/callback/github`
+
+## API Endpoints
+
+- `GET /api/auth/signin/[provider]` - Initiate OAuth flow
+- `GET /api/auth/callback/[provider]` - Handle OAuth callback
+- `GET /api/auth/me` - Get current user
+- `POST /api/auth/signout` - Sign out user
+
+## Database Schema
+
+- **users**: User profiles with email, name, role
+- **credentials**: Password hashes for local auth (future)
+- **oauth_accounts**: OAuth account links
+
+## Usage
+
+Visit `http://localhost:3000` to see the sign-in page with OAuth providers.
+
+After authentication, users are redirected to `/dashboard` where they can view their profile and sign out.
